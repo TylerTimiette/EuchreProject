@@ -18,12 +18,44 @@ public class Card {
      * The generator still supports a variety of games, allowing it to be used in, say, another card game with minimal editing required.
      * Basically, this class can polymorph if need be. It can be used for anything involving card games.
      */
+
+  //Bowers of a same color are also trump. This is defined in the suit.
     public enum Suit {
-        HEARTS, CLUBS, SPADES, DIAMONDS
+        HEARTS(Color.RED),
+        CLUBS(Color.BLACK),
+        SPADES(Color.BLACK),
+        DIAMONDS(Color.RED);
+
+        private Color color;
+
+        Suit(Color color) {
+            this.color = color;
+        }
+
+        public Color getColor() {
+            return color;
+        }
+        public enum Color {
+            RED, BLACK
+        }
     }
 
+    public String holder;
+    public int viabilityScore;
+
+    //This simplifies finding the highest value later.
     public enum Value {
-        ACE, NINE, TEN, JACK, QUEEN, KING
+        ACE(14), NINE(9), TEN(10), JACK(11), QUEEN(12), KING(13);
+
+        private final int numericValue;
+
+        private Value(int numericValue) {
+            this.numericValue = numericValue;
+        }
+
+        public int numericValue() {
+            return numericValue;
+        }
     }
 
     private final Suit suit;
@@ -37,11 +69,28 @@ public class Card {
     public Value getValue() {
         return this.value;
     }
-    public Value getValue(String s) {
-        return this.value;
-    }
 
     public Suit getSuit() {
         return this.suit;
+    }
+
+    public int getNumericValue() {
+        return this.getValue().numericValue();
+    }
+
+    public String holder() {
+        return holder;
+    }
+
+    public void setHolder(String s) {
+        holder = s;
+    }
+    //This is exclusive to robots and helps them figure out which card to run with.
+    public void increaseViability(int increase) {
+        viabilityScore += increase;
+    }
+
+    public int getViabilityScore() {
+        return viabilityScore;
     }
 }
