@@ -5,7 +5,7 @@ import java.util.Random;
 import Game.Card.Suit;
 import Game.Card.Value;
 
-public class HandGenerator {
+public class Hands {
 
     /**
      * Generates a hand of a given size

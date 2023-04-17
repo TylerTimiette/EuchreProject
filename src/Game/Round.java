@@ -1,5 +1,6 @@
 package Game;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Round {
@@ -9,7 +10,7 @@ public class Round {
     public Card highestTotalValue;
     public boolean isTrumpIn = false;
     public HashMap<String, Card> cardMap = new HashMap<String, Card>();
-
+    public ArrayList<ComputerPlayer> cpuList = new ArrayList<ComputerPlayer>();
     public int tricksPlayed = 0;
     public int tricksLost = 0;
     public int tricksWon = 0;
@@ -51,6 +52,21 @@ public class Round {
 
     public void setHighestTotalValue(Card c) {
         highestTotalValue = c;
+    }
+
+    public void start() {
+        cardMap.clear();
+        Hands.inPlay.clear();
+        cpuList.clear();
+
+        Player p = new Player(Hands.generateHand(5));
+        for(int i = 1; i < 4; i++) {
+            ComputerPlayer cpu = new ComputerPlayer(Hands.generateHand(5), "CPU"+i);
+            cpuList.add(cpu);
+        }
+        if(Game.initiative == 1) {
+
+        }
     }
 
 

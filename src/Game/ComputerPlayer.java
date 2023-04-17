@@ -8,7 +8,11 @@ import java.util.Random;
 public class ComputerPlayer {
 
     public String name;
-    public ArrayList<Card> hand = new ArrayList<Card>();
+    public ArrayList<Card> hand;
+    int clubScore = 0;
+    int spadeScore = 0;
+    int heartScore = 0;
+    int diamondScore = 0;
 
     public ComputerPlayer(ArrayList<Card> hand, String name) {
         this.hand = hand;
@@ -100,7 +104,7 @@ public class ComputerPlayer {
     }
 
 
-    public void populate() {
+    public void clear() {
         //Done just in case I've messed up somewhere and the arrays are not deleted properly
         hand.clear();
 
@@ -110,10 +114,6 @@ public class ComputerPlayer {
     //This function dictates an AI's interest in a given suit. It is likely that it will call for the suit with the most interest should it be given the chance.
     //It is a boolean, as they have the choice to not call.
     public boolean call() {
-        int clubScore = 0;
-        int spadeScore = 0;
-        int heartScore = 0;
-        int diamondScore = 0;
         for (Card personalCard : hand) {
             switch (personalCard.getSuit()) {
                 case CLUBS:
@@ -214,9 +214,11 @@ public class ComputerPlayer {
         if(rand.nextDouble() < 0.5) {
             System.out.println( name + " >> I would like to play " + highestScore);
             return true;
+        } else {
+            System.out.println(name + " >> Pass.");
+            return false;
         }
         //We assume that no call was made.
-        return false;
     }
 }
 
