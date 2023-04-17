@@ -61,7 +61,7 @@ public class Round {
 
         Player p = new Player(Hands.generateHand(5));
         for(int i = 1; i < 4; i++) {
-            ComputerPlayer cpu = new ComputerPlayer(Hands.generateHand(5), "CPU"+i);
+            ComputerPlayer cpu = new ComputerPlayer(Hands.generateHand(5), "CPU"+i, this);
             cpuList.add(cpu);
         }
         if(Game.initiative == 1) {

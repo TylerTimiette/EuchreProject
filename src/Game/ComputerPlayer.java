@@ -14,9 +14,13 @@ public class ComputerPlayer {
     int heartScore = 0;
     int diamondScore = 0;
 
-    public ComputerPlayer(ArrayList<Card> hand, String name) {
+    Game.Card.Suit bestSuit;
+    Round round;
+
+    public ComputerPlayer(ArrayList<Card> hand, String name, Round round) {
         this.hand = hand;
         this.name = name;
+        this.round = round;
     }
 
     //We pass this with a Round in order to avoid too much necessary static. Additionally, the larger game logic should probably pass the round data to the bots anyways.
@@ -114,6 +118,30 @@ public class ComputerPlayer {
     //This function dictates an AI's interest in a given suit. It is likely that it will call for the suit with the most interest should it be given the chance.
     //It is a boolean, as they have the choice to not call.
     public boolean call() {
+        Random rand = new Random();
+        getBestSuit();
+        if (clubScore == 11 || spadeScore == 11 || heartScore == 11 || diamondScore == 11) {
+            if (rand.nextDouble() < 0.25) {
+                System.out.println(name + " >> I would like to go alone.");
+                System.out.println("The AI (" + name + ") has the most confidence in " + getBestSuit() + ", and wishes to play it.");
+                return true;
+            }
+
+        }
+
+
+        //The player will get first pick on what suit they would like to play, as it seems unfun to allow the AIs to pick 3/4ths of the time.
+        if(rand.nextDouble() < 0.5) {
+            System.out.println( name + " >> I would like to play that suit.");
+            return true;
+        } else {
+            System.out.println(name + " >> Pass.");
+            return false;
+        }
+        //We assume that no call was made.
+    }
+
+    public Game.Card.Suit getBestSuit() {
         for (Card personalCard : hand) {
             switch (personalCard.getSuit()) {
                 case CLUBS:
@@ -178,48 +206,46 @@ public class ComputerPlayer {
                     break;
             }
         }
-        Random rand = new Random();
         String highestScore = "";
         int highestValue = -1;
 
         if (clubScore > highestValue) {
             highestValue = clubScore;
             highestScore = "Clubs";
+            bestSuit = Card.Suit.CLUBS;
         }
         if (spadeScore > highestValue) {
             highestValue = spadeScore;
             highestScore = "Spades";
+            bestSuit = Card.Suit.SPADES;
         }
         if (heartScore > highestValue) {
             highestValue = heartScore;
             highestScore = "Hearts";
+            bestSuit = Card.Suit.HEARTS;
         }
         if (diamondScore > highestValue) {
             highestValue = diamondScore;
             highestScore = "Diamonds";
+            bestSuit = Card.Suit.DIAMONDS;
         }
-
-
-        if (clubScore == 11 || spadeScore == 11 || heartScore == 11 || diamondScore == 11) {
-            if (rand.nextDouble() < 0.25) {
-                System.out.println(name + " >> I would like to go alone.");
-                System.out.println("The AI (" + name + ") has the most confidence in " + highestScore + ", and wishes to play it.");
-                return true;
-            }
-
-        }
-
-
-        //The player will get first pick on what suit they would like to play, as it seems unfun to allow the AIs to pick 3/4ths of the time.
-        if(rand.nextDouble() < 0.5) {
-            System.out.println( name + " >> I would like to play " + highestScore);
-            return true;
-        } else {
-            System.out.println(name + " >> Pass.");
-            return false;
-        }
-        //We assume that no call was made.
+        return bestSuit;
     }
+
+
+
+
+    //Name the same as the previous call function, this is used for when it comes to passing/picking up a certain card.
+    public boolean call(Card c) {
+        if(bestSuit == c.getSuit()) {
+
+        }
+        return false;
+    }
+
+
+
+
 }
 
 
