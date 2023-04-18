@@ -15,17 +15,15 @@ public class Player {
     }
 
     //main method for the player
-    public void prompt() {
-        if (initiative == 1) {
+    public void prompt(ArrayList<Card> cardsPlayed) {
 
 
         }
-    }
+
 
     public void call(Card determiner) {
 
-
-        System.out.println("You now have the option to PASS (n/no) or CALL (y/yes) on this suit.");
+        System.out.println("You now have the option to PASS (n/no) or CALL (y/yes) on the " + determiner.getValue() + " of " + determiner.getSuit());
         Scanner scan = new Scanner(System.in);
         String s = scan.next();
         //Check for valid input
@@ -74,16 +72,64 @@ public class Player {
         }
     }
 
+    //When they have all passed, the player is prompted for what they want to play
+    public void call() {
+        System.out.println("YOUR CURRENT CARDS\n");
+        for (int i = 1; i <= hand.size(); i++) {
+            System.out.println("[" + i + "] " + hand.get(i).getValue() + " of " + hand.get(i).getSuit());
+        }
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Pick a suit (hearts/spades/club/diamonds) that you currently have in your hand, or pass (n/no)");
+        String s = scan.next();
+        if(s.matches("(?i)^(d(iamonds)?|c(lubs)?|s(pades)?|h(earts)?|pass)$")) {
+            //We're determining what suit they want to play.
+            Game.Card.Suit suit;
+            if(s.equalsIgnoreCase("d") || s.equalsIgnoreCase("diamonds")) {
+                suit = Game.Card.Suit.DIAMONDS;
+            } else if(s.equalsIgnoreCase("c") || s.equalsIgnoreCase("clubs")) {
+                suit = Game.Card.Suit.CLUBS;
+            } else if(s.equalsIgnoreCase("s") || s.equalsIgnoreCase("spades")) {
+                suit = Game.Card.Suit.SPADES;
+            } else if(s.equalsIgnoreCase("h") || s.equalsIgnoreCase("hearts")) {
+                suit = Game.Card.Suit.HEARTS;
+            } else {
+                //either they passed or an error occurred. regardless, not good
+                suit = null;
+            }
+
+            if(suit != null) {
+                for(Card card : hand) {
+                    if(card.getSuit() == suit) {
+                        called = true;
+                    } else if(card.getValue().equals(Card.Value.JACK) && (card.getSuit().getColor().equals(suit.getColor()))) {
+                        called = true;
+                    }
+                }
+                if(called) {
+                    System.out.println("You have chosen the suit!");
+                }
+            } else {
+                called = false;
+            }
+        }
+    }
+
+
+
+
+
     public boolean decision() {
         return called;
     }
 
-    /**public void setInitiative(int i) {
+
+
+public void setInitiative(int i) {
         initiative = i;
     }
 
     public int getInitiative() {
         return initiative;
-    }**/
+    }
 
 }

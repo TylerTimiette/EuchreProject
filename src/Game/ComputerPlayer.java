@@ -13,6 +13,7 @@ public class ComputerPlayer {
     int spadeScore = 0;
     int heartScore = 0;
     int diamondScore = 0;
+    int highestValue = -1;
 
     Game.Card.Suit bestSuit;
     Round round;
@@ -207,7 +208,6 @@ public class ComputerPlayer {
             }
         }
         String highestScore = "";
-        int highestValue = -1;
 
         if (clubScore > highestValue) {
             highestValue = clubScore;
@@ -237,13 +237,40 @@ public class ComputerPlayer {
 
     //Name the same as the previous call function, this is used for when it comes to passing/picking up a certain card.
     public boolean call(Card c) {
+        //If our best suit is
         if(bestSuit == c.getSuit()) {
-
+            //Confidence scoring
+            if(highestValue > 9) {
+                replaceCard(c);
+                return true;
+                //They still think about it.
+            } else {
+                Random r = new Random();
+                if(r.nextDouble() >= 0.49) {
+                    replaceCard(c);
+                    return true;
+                }
+            }
+        } else {
+            System.out.println("The bot " + name + " passes.");
+            return false;
         }
         return false;
     }
 
 
+
+    public void replaceCard(Card c) {
+        System.out.println("The bot " + name+ " would like to play this suit.");
+        System.out.println("Selecting card...");
+        for(Card card : hand) {
+            if(c.getNumericValue() > card.getNumericValue()) {
+                //Replace card.
+                hand.set(hand.indexOf(card), c);
+                //We don't announce which card we put down
+            }
+        }
+    }
 
 
 }

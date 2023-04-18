@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class Game {
 
-    public static int initiative = 1;
         public static void main(String[] args) {
 
             ArrayList<Card> cardHand = Hands.generateHand(5);

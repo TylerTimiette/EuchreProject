@@ -15,8 +15,12 @@ public class Round {
     public int tricksLost = 0;
     public int tricksWon = 0;
 
-    public Round(Card.Suit trump) {
+/**    public Round(Card.Suit trump) {
         this.trump = trump;
+    } Saving for archival purposes.**/
+
+    public Round() {
+
     }
 
 
@@ -64,10 +68,54 @@ public class Round {
             ComputerPlayer cpu = new ComputerPlayer(Hands.generateHand(5), "CPU"+i, this);
             cpuList.add(cpu);
         }
-        if(Game.initiative == 1) {
+            //I figured this was just the best possible way to do this.
+            Card decision = Hands.generateHand(1).get(0);
+            System.out.println("The card presented face up is the " + decision.getValue() + " of " + decision.getSuit());
 
+            //It's annoying to have bots make decisions 3/4th of the time. So we let the player choose first each time.
+            if(p.decision()) {
+                //playTrick();
+            }
+
+            //This is for if no calls are made. Keeps track of things.
+            boolean noCall = true;
+            for(ComputerPlayer cpu : cpuList) {
+                //Not really a getter here. It also doubles as an initializer
+                cpu.getBestSuit();
+                if(cpu.call(decision)) {
+                    noCall = false;
+                    break;
+                }
+            }
+
+            if(noCall) {
+                System.out.println("\nNo calls were made.");
+                p.call();
+                if(p.decision()) {
+                    //playTrick();
+                }
+                else {
+                    for(ComputerPlayer cpu : cpuList) {
+                        cpu.getBestSuit();
+                        if(cpu.call()) {
+                            noCall = false;
+                            break;
+                        }
+                    }
+                }
+
+            }
+
+
+
+        }
+
+
+        public void playTrick(Player player) {
+            if(player.getInitiative() == 1) {
+                //player.prompt();
+            }
         }
     }
 
 
-}
