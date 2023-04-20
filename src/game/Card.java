@@ -1,4 +1,4 @@
-package Game;
+package game;
 
 
 /**
@@ -81,7 +81,6 @@ public class Card {
     public String holder() {
         return holder;
     }
-
     public void setHolder(String s) {
         holder = s;
     }
