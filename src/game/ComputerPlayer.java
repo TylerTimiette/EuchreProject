@@ -47,14 +47,15 @@ public class ComputerPlayer  {
             boolean inDemand = false;
             //This is for our personal hand.
             for (Card personalCard : hand) {
-                //THIS IS FOR THE CARDS CURRENTLY ON THE TABLE!!!
-                for (Map.Entry<String, Card> tabledCard : cardMap.entrySet()) {
                     //Check if we have a card from the played suit. If we do, we must play it.
                     if (personalCard.getSuit().equals(data.getSuit())) {
                         //Compare to the tabled card. Additionally set a flag that we cannot play trump or offsuit
                         inDemand = true;
+
                         System.out.println(name + " has a card of the same suit.");
-                        if (tabledCard.getValue().getSuit().equals(data.getSuit())) {
+
+                        //THIS IS FOR THE CARDS CURRENTLY ON THE TABLE!!!
+                        for (Map.Entry<String, Card> tabledCard : cardMap.entrySet()) {
                             if (personalCard.getNumericValue() > tabledCard.getValue().getNumericValue()) {
                                 //A big bump in viability is provided because we have a higher value card of a suit that is in-demand.
                                 personalCard.increaseViability(4);
@@ -65,7 +66,7 @@ public class ComputerPlayer  {
                                 System.out.println("increased by 1");
                             }
                         }
-                    }
+
                 }
                 System.out.println(inDemand + " " + name);
                 //We do not have a card that is in-demand.
@@ -148,7 +149,7 @@ public class ComputerPlayer  {
     public Card.Suit getBestSuit() {
         for (Card personalCard : hand) {
             switch (personalCard.getSuit()) {
-                case CLUBS:
+                case CLUBS -> {
                     if (personalCard.getSuit().getColor() == Card.Suit.Color.BLACK) {
                         clubScore += 1;
                         if (personalCard.getValue() == Card.Value.QUEEN) {
@@ -162,8 +163,8 @@ public class ComputerPlayer  {
                             clubScore += 5;
                         }
                     }
-                    break;
-                case SPADES:
+                }
+                case SPADES -> {
                     if (personalCard.getSuit().getColor() == Card.Suit.Color.BLACK) {
                         spadeScore += 1;
                         if (personalCard.getValue() == Card.Value.QUEEN) {
@@ -177,8 +178,8 @@ public class ComputerPlayer  {
                             spadeScore += 5;
                         }
                     }
-                    break;
-                case HEARTS:
+                }
+                case HEARTS -> {
                     if (personalCard.getSuit().getColor() == Card.Suit.Color.RED) {
                         heartScore += 1;
                         if (personalCard.getValue() == Card.Value.QUEEN) {
@@ -192,8 +193,8 @@ public class ComputerPlayer  {
                             heartScore += 5;
                         }
                     }
-                    break;
-                case DIAMONDS:
+                }
+                case DIAMONDS -> {
                     if (personalCard.getSuit().getColor() == Card.Suit.Color.RED) {
                         diamondScore += 1;
                         if (personalCard.getValue() == Card.Value.QUEEN) {
@@ -207,7 +208,7 @@ public class ComputerPlayer  {
                             diamondScore += 5;
                         }
                     }
-                    break;
+                }
             }
         }
         String highestScore = "";
