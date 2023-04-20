@@ -21,8 +21,11 @@ public class Player {
     //main method for the player
     public void prompt(Round round) {
             RoundData data = round.getData();
-            System.out.println("It is your turn to play. The trump is set to " + data.getTrump() + ", and the current suit is unset.");
             Card.Suit suit = data.getSuit();
+            data.setHighestValue(null);
+
+
+        System.out.println("It is your turn to play. The trump is set to " + data.getTrump() + ", and the current suit is unset");
             for (int i = 0; i < hand.size(); i++) {
                 System.out.println("[" + (i+1) + "] " + hand.get(i).getValue() + " of " + hand.get(i).getSuit());
             }
@@ -34,9 +37,23 @@ public class Player {
                //Check that they put a good number in.
                if(i <= hand.size()) {
                    System.out.println("You have decided to play the " + hand.get(i-1).getValue() + " of " + hand.get(i-1).getSuit());
-                   if(data.getHighestValue() == null || (data.getHighestValue().getNumericValue() < hand.get(i-1).getNumericValue()))
-                       data.setHighestValue(hand.get(i-1));
-                   if(data.getTrump().equals(hand.get(i).getSuit())) {
+                       data.setSuit(hand.get(i-1).getSuit());
+
+                   if(data.getHighestValue() == null || (data.getHighestValue().getNumericValue() < hand.get(i-1).getNumericValue())) {
+                       data.setHighestValue(hand.get(i - 1));
+                        if(hand.get(i - 1).getValue().equals(Card.Value.JACK)) {
+                           //This is for checking if the jack is actually trump. Jacks are the highest cards if they are trump.
+                           if(hand.get(i - 1).getSuit().equals(data.getTrump())) {
+                               hand.get(i - 1).setNumericValue(100);
+                               //This is for if we're playing the other bower of the same-colored suit.
+                           } else if(hand.get(i - 1).getSuit().getColor().equals(data.getTrump().getColor())) {
+                               if(!data.getHighestValue().equals(Card.Value.JACK)) {
+                                   hand.get(i - 1).setNumericValue(90);
+                               }
+                           }
+                       }
+                   }
+                   if(data.getTrump().equals(hand.get(i-1).getSuit())) {
                        data.setTrumpIn(true);
                    }
 
@@ -57,7 +74,6 @@ public class Player {
 
     public void call(Card determiner, Round round) {
         RoundData data = round.getData();
-        System.out.println(hand.size());
         for (int i = 0; i < hand.size(); i++) {
             System.out.println("[" + (i+1) + "] " + hand.get(i).getValue() + " of " + hand.get(i).getSuit());
         }
@@ -115,11 +131,11 @@ public class Player {
     public void call(Round round) {
         RoundData data = round.getData();
         System.out.println("YOUR CURRENT CARDS\n");
-        for (int i = 1; i < hand.size(); i++) {
+        for (int i = 0; i < hand.size(); i++) {
             System.out.println("[" + (i+1) + "] " + hand.get((i)).getValue() + " of " + hand.get((i)).getSuit());
         }
         Scanner scan = new Scanner(System.in);
-        System.out.println("Pick a suit (hearts/spades/club/diamonds) that you currently have in your hand, or pass (n/no/pass)");
+        System.out.println("Pick a suit (hearts/spades/club/diamonds) that you currently have in your hand, or pass (n/no/pass). The index numbers also function for this.");
         String s = scan.next();
         if(s.matches("(?i)^(d(iamonds)?|c(lubs)?|s(pades)?|h(earts)?|pass|n|no)$")) {
             //We're determining what suit they want to play.
@@ -149,47 +165,28 @@ public class Player {
                     System.out.println("You have chosen the trump suit!");
                     round.getData().setTrump(suit);
                 }
-                setGoingIn();
             } else {
                 //Passes. Or maybe there was an error.
                 called = false;
                 System.out.println("You have passed.");
             }
+        } else {
+            try {
+                int i = Integer.parseInt(s);
+                if(i <= 5 && i > 0) {
+                    round.getData().setTrump(hand.get(i-1).getSuit());
+                    System.out.println("You have chosen the trump suit!");
+                    called = true;
+                    //Just to make it simpler.
+                } else throw new NumberFormatException();
+            } catch (NumberFormatException e) {
+                System.out.println("Please either pass or select a suit.");
+                call(round);
+            }
         }
     }
-
-
-
-
 
     public boolean decision() {
         return called;
     }
-
-    public boolean isGoingIn() { return goingIn; }
-    public void setGoingIn() {
-        System.out.println("Are you going in alone? This means you will not receive backup from your friendly CPU, but have the potential to win more points by doing so. Y/N");
-        Scanner scan = new Scanner(System.in);
-        String s = scan.next();
-
-        if (s.matches("(?i)^(y|n(o)?|yes)$")) {
-            if (s.matches("(?i)^(y|yes?)$")) {
-                goingIn = true;
-                System.out.println("You are going in alone.");
-            }
-
-            if (s.matches("(?)^(n|no)$")) {
-                goingIn = false;
-                System.out.println("You are not going in alone.");
-            }
-
-        } else {
-            setGoingIn();
-        }
-    }
-
-
-
-
-
 }
