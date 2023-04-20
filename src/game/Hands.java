@@ -20,33 +20,53 @@ public class Hands {
             // create a card and add it to the hand
             hand.add(recursiveCard(name));
         }
+       // System.out.println("\n\n");
 
 
         return hand;
     }
 
-    public static Card recursiveCard(String name) {
-        // we'll use this to generate random numbers
-        Random random = new Random();
 
-        // let's get these lengths once
+
+
+    public static Card recursiveCard(String name) {
+        System.gc();
+        Random random = new Random();
         int numValues = Card.Value.values().length;
         int numSuits = Card.Suit.values().length;
-        // get a random suit and value.
-        Suit randomSuit = Card.Suit.values()[random.nextInt(numSuits)];
-        Value randomValue = Card.Value.values()[random.nextInt(numValues)];
-        Card card = new Card(randomSuit, randomValue);
+
+        Suit randomSuit;
+        Value randomValue;
+        Card card;
+        //Repeatedly generate cards until one that isn't in play is found.
+        do {
+            randomSuit = Card.Suit.values()[random.nextInt(numSuits)];
+            randomValue = Card.Value.values()[random.nextInt(numValues)];
+            card = new Card(randomSuit, randomValue);
+        } while (inPlay.contains(card.getValue().toString() + card.getSuit().toString()));
+
+        inPlay.add(card.getValue().toString() + card.getSuit().toString());
         card.setHolder(name);
-        //There's definitely other ways of doing this, but I am lazy.
-        if(!inPlay.contains(card.getValue().toString()+card.getSuit().toString())) {
-            inPlay.add(card.getValue().toString()+card.getSuit().toString());
-            System.out.println(name + " has a " + card.getValue() + " of " + card.getSuit());
-            return card;
-        } else {
-            System.out.println("card already exists");
-            recursiveCard(name);
-        }
-        //We do the recursion here because having to regenerate an entire hand over and over probably leaves performance on the table. Why do that when we could simply... not?
+       // System.out.println(name + " has a " + card.getValue() + " of " + card.getSuit());
+        return card;
+    }
+
+    public static Card tableCard() {
+        Random random = new Random();
+        int numValues = Card.Value.values().length;
+        int numSuits = Card.Suit.values().length;
+
+        Suit randomSuit;
+        Value randomValue;
+        Card card;
+        //Repeatedly generate cards until one that isn't in play is found.
+        do {
+            randomSuit = Card.Suit.values()[random.nextInt(numSuits)];
+            randomValue = Card.Value.values()[random.nextInt(numValues)];
+            card = new Card(randomSuit, randomValue);
+        } while (inPlay.contains(card.getValue().toString() + card.getSuit().toString()));
+
+        inPlay.add(card.getValue().toString() + card.getSuit().toString());
         return card;
     }
 }

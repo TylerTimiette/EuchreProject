@@ -23,62 +23,51 @@ public class ComputerPlayer  {
         this.round = round;
     }
 
-    //We pass this with a Round in order to avoid too much necessary static. Additionally, the larger game logic should probably pass the round data to the bots anyways.
+
     public Card bestViableCard() {
         Card topCard = hand.get(0);
         RoundData data = round.getData();
         HashMap<String, Card> cardMap = data.getCardMap();
-        //Time for some heavy logic.
-        //No cards have been played yet, so the bot will pick a card at random.
-        if (cardMap.isEmpty()) {
-            Random random = new Random();
-            int randomIndex = random.nextInt(hand.size());
-            Card picked = hand.get(randomIndex);
-            topCard = picked;
-
-            if (topCard.getSuit().toString().equalsIgnoreCase(data.getTrump().toString()))
-                data.setTrumpIn(true);
-
-            data.setSuit(topCard.getSuit());
-            return topCard;
-            //Here we go.
-        } else {
-
+        try {
             boolean inDemand = false;
+            //Time for some heavy logic.
+
             //This is for our personal hand.
             for (Card personalCard : hand) {
-                    //Check if we have a card from the played suit. If we do, we must play it.
-                    if (personalCard.getSuit().equals(data.getSuit())) {
-                        //Compare to the tabled card. Additionally set a flag that we cannot play trump or offsuit
-                        inDemand = true;
+                //Check if we have a card from the played suit. If we do, we must play it.
+                if (personalCard.getSuit().equals(data.getSuit())) {
+                    //Compare to the tabled card. Additionally set a flag that we cannot play trump or offsuit
+                    inDemand = true;
 
-                        System.out.println(name + " has a card of the same suit.");
+                    //System.out.println(name + " has a card of the same suit.");
 
-                        //THIS IS FOR THE CARDS CURRENTLY ON THE TABLE!!!
-                        for (Map.Entry<String, Card> tabledCard : cardMap.entrySet()) {
-                            if (personalCard.getNumericValue() > tabledCard.getValue().getNumericValue()) {
-                                //A big bump in viability is provided because we have a higher value card of a suit that is in-demand.
-                                personalCard.increaseViability(4);
-                                System.out.println("increased by 4");
-                            } else {
-                                //We still want to use the card, as we are forced to. Providing a bump in viability is the best way to do that.
-                                personalCard.increaseViability(1);
-                                System.out.println("increased by 1");
-                            }
+                    //THIS IS FOR THE CARDS CURRENTLY ON THE TABLE!!!
+                    for (Map.Entry<String, Card> tabledCard : cardMap.entrySet()) {
+                        if (personalCard.getNumericValue() > tabledCard.getValue().getNumericValue()) {
+                            //A big bump in viability is provided because we have a higher value card of a suit that is in-demand.
+                            personalCard.increaseViability(4);
+                        } else {
+                            //We still want to use the card, as we are forced to. Providing a bump in viability is the best way to do that.
+                            personalCard.increaseViability(1);
                         }
-
+                    }
+                    break;
                 }
-                System.out.println(inDemand + " " + name);
-                //We do not have a card that is in-demand.
-                if (inDemand == false) {
-                    System.out.println(name + " does not have an in-demand card.");
-                    //Trump is in
+            }
+
+            boolean hasTrump = false;
+            //We do not have a card that is in-demand.
+            if (!inDemand) {
+                //System.out.println(name + " does not have an in-demand card.");
+                for (Card personalCard : hand) {
+                    //Trump is in hand.
                     if (personalCard.getSuit().equals(data.getTrump()) || (personalCard.getValue() == Card.Value.JACK && personalCard.getSuit().getColor() == data.getTrump().getColor())) {
                         //Don't you love nested for-loops?
+                        hasTrump = true;
                         for (Map.Entry<String, Card> tabledCard : cardMap.entrySet()) {
                             if ((tabledCard.getValue().getSuit().equals(data.getTrump()) && personalCard.getNumericValue() > tabledCard.getValue().getNumericValue())) {
                                 //The enemy CPUs will have the same name. This is so that you don't teamkill.
-                                if (!(tabledCard.getValue().holder().equalsIgnoreCase(personalCard.holder()))) {
+                                if (!(tabledCard.getValue().holder().contains(personalCard.holder().substring(0, personalCard.holder().length() - 1)))) {
                                     personalCard.increaseViability(10);
                                 } else {
                                     //They are on the same team. The AI should avoid trumping its partner if possible.
@@ -89,24 +78,43 @@ public class ComputerPlayer  {
                                             nest.increaseViability(15); //This should only proc when the AI has no other option.
                                     }
                                 }
+                                break;
                             }
                         }
+                        break;
+                    }
+                }
+
+                if (!hasTrump) {
+                    Random random = new Random();
+                    int rand = random.nextInt(hand.size());
+                    Card randomCard = hand.get(rand);
+                    System.out.println(name + " plays the " + randomCard.getValue() + " of " + randomCard.getSuit());
+                    return randomCard;
+                }
+            }
+
+            //System.out.println("Decision is being made...");
+            for (Card personalCard : hand) {
+                if (topCard.getViabilityScore() <= personalCard.getViabilityScore())
+                    topCard = personalCard;
+            }
+            if (data.getHighestValue().getNumericValue() < topCard.getNumericValue()) {
+                data.setHighestValue(topCard);
+                if ((data.getSuit().equals(topCard.getSuit()) || topCard.getSuit().equals(data.getTrump())) || topCard.getSuit().getColor().equals(data.getTrump().getColor())) {
+                    System.out.println("A new highcard has been set!");
+                    if (name.contains("PLAYER2")) {
+                        data.setWinner(true);
+                    } else {
+                        data.setWinner(false);
                     }
                 }
             }
-        }
-        System.out.println("Decision is being made...");
-        for (Card personalCard : hand) {
-            if (topCard.getViabilityScore() <= personalCard.getViabilityScore())
-                topCard = personalCard;
-        }
-        if (data.getHighestValue().getNumericValue() < topCard.getNumericValue()) {
-            data.setHighestValue(topCard);
-            if(name.contains("3")) {
-                data.setWinner(true);
-            } else {
-                data.setWinner(false);
-            }
+            //Very rarely there is an exception generated when the inputs are too fast. This covers for that. It's because of both garbage collection and a string that it thinks is null.
+            //(The string is not null)
+        } catch (Exception e) {
+            e.printStackTrace();
+            bestViableCard();
         }
         return topCard;
     }
@@ -114,30 +122,28 @@ public class ComputerPlayer  {
 
     public void play() {
         Card cardPlayed = bestViableCard();
-        System.out.println("The " + name + " plays the " + cardPlayed.getValue().toString() + " of " + cardPlayed.getSuit() + "!");
+        System.out.println("The bot " + name + " plays the " + cardPlayed.getValue() + " of " + cardPlayed.getSuit() + "!");
+        hand.remove(bestViableCard());
+        round.getData().getCardMap().put(name, cardPlayed);
     }
 
 
-    public void clear() {
-        //Done just in case I've messed up somewhere and the arrays are not deleted properly
-        hand.clear();
-
-    }
 
 
     //This function dictates an AI's interest in a given suit. It is likely that it will call for the suit with the most interest should it be given the chance.
     //It is a boolean, as they have the choice to not call.
     public boolean call() {
         Random rand = new Random();
+        clubScore = 0;
+        spadeScore = 0;
+        heartScore = 0;
+        diamondScore = 0;
         getBestSuit();
         System.out.println(name + " AI is deciding.");
-        if (clubScore == 11 || spadeScore == 11 || heartScore == 11 || diamondScore == 11) {
-            System.out.println(name + " AI has an 11 score");
-            //The CPU going in alone while working with the human player is not ideal...
-        }
         //The player will get first pick on what suit they would like to play, as it seems unfun to allow the AIs to pick 3/4ths of the time.
         if(rand.nextDouble() < 0.5) {
             System.out.println( name + " >> I would like to play " + getBestSuit());
+            round.getData().setTrump(getBestSuit());
             return true;
         } else {
             System.out.println(name + " >> Pass.");
@@ -211,30 +217,25 @@ public class ComputerPlayer  {
                 }
             }
         }
-        String highestScore = "";
 
         if (clubScore > highestValue) {
             highestValue = clubScore;
-            highestScore = "Clubs";
             bestSuit = Card.Suit.CLUBS;
         }
         if (spadeScore > highestValue) {
             highestValue = spadeScore;
-            highestScore = "Spades";
             bestSuit = Card.Suit.SPADES;
 
         }
         if (heartScore > highestValue) {
             highestValue = heartScore;
-            highestScore = "Hearts";
             bestSuit = Card.Suit.HEARTS;
         }
         if (diamondScore > highestValue) {
             highestValue = diamondScore;
-            highestScore = "Diamonds";
             bestSuit = Card.Suit.DIAMONDS;
         }
-        System.out.println(name + " HIGHEST SCORE IN: " + highestScore + " with score of " + highestValue);
+        //System.out.println(name + " HIGHEST SCORE IN: " + highestScore + " with score of " + highestValue);
         return bestSuit;
     }
 
@@ -254,8 +255,10 @@ public class ComputerPlayer  {
                 Random r = new Random();
                 if(r.nextDouble() >= 0.49) {
                     replaceCard(c);
+                    round.getData().setTrump(c.getSuit());
                     return true;
-                }
+                } else
+                    System.out.println("The bot " + name + " passes.");
             }
         } else {
             System.out.println("The bot " + name + " passes.");
@@ -271,10 +274,16 @@ public class ComputerPlayer  {
         System.out.println("Selecting card to replace...");
         boolean b = false;
         for(Card card : hand) {
-            System.out.println(card.getSuit() + " of " + card.getValue() + " num val = " + card.getNumericValue());
+            //System.out.println(card.getSuit() + " of " + card.getValue() + " num val = " + card.getNumericValue());
             if(c.getNumericValue() > card.getNumericValue()) {
+                if(c.getSuit().equals(card.getSuit()) || c.getSuit().getColor().equals(card.getSuit().getColor())) {
+                    //We don't want to replace a jack of a trump suit.
+                    if(card.getValue().equals(Card.Value.JACK)) {
+                        continue;
+                    }
+                }
                 //Replace card.
-                System.out.println("Replacing " + c.getSuit() + " of " + c.getValue() + " num val = " + c.getNumericValue());
+                //System.out.println("Replacing " + card.getSuit() + " of " + card.getValue() + " num val = " + card.getNumericValue() + " for " + c.getSuit() + " of " + c.getValue());
                 hand.set(hand.indexOf(card), c);
                 b = true;
                 break;

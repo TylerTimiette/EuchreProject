@@ -48,12 +48,6 @@ public class RoundData {
         return cardMap;
     }
 
-    public ArrayList<Card> getPlayedCards() { return playedCards; }
-
-    public boolean trumpIn() {
-        return isTrumpIn;
-    }
-
     public void setTrumpIn(boolean b) {
         isTrumpIn = b;
     }
@@ -68,4 +62,6 @@ public class RoundData {
     public boolean getWinner() { return winner; }
 
     public void setWinner(boolean b) { winner = b; }
+
+
 }

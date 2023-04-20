@@ -26,7 +26,7 @@ public class Card {
         SPADES(Color.BLACK),
         DIAMONDS(Color.RED);
 
-        private Color color;
+        private final Color color;
 
         Suit(Color color) {
             this.color = color;
@@ -40,22 +40,26 @@ public class Card {
         }
     }
 
-    public String holder;
+    public String holder = "default";
     public int viabilityScore;
 
     //This simplifies finding the highest value later.
     public enum Value {
         ACE(14), NINE(9), TEN(10), JACK(11), QUEEN(12), KING(13);
 
-        private final int numericValue;
+        private int numericValue;
 
-        private Value(int numericValue) {
+        Value(int numericValue) {
             this.numericValue = numericValue;
         }
 
         public int numericValue() {
             return numericValue;
         }
+
+
+        public void setNumericValue(int i) { numericValue = i; }
+
     }
 
     private final Suit suit;
@@ -77,6 +81,7 @@ public class Card {
     public int getNumericValue() {
         return this.getValue().numericValue();
     }
+    public void setNumericValue(int i) { this.getValue().setNumericValue(i);}
 
     public String holder() {
         return holder;

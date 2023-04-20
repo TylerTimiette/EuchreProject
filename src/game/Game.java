@@ -1,6 +1,5 @@
 package game;
 
-import java.util.ArrayList;
 
 public class Game {
 
@@ -19,17 +18,21 @@ public class Game {
         }
 
 
+        public static void setPointsWon(int i) {
+            pointsWon += i;
+        }
+        public static void setPointsLost(int i) {
+            pointsLost += i;
+        }
+
         public static void play() {
             System.out.println("Starting game.");
-            Round r = new Round(new RoundData(), pointsWon, pointsLost);
+            Round r = new Round(new RoundData());
             r.start();
-            if(pointsWon != 10 && pointsLost != 10) {
+            if(!(pointsWon == 10 && pointsLost == 10)) {
                 play();
-            } else {
-                System.out.println("GAME OVER.");
-                if(pointsWon > pointsLost) {
-                    System.out.println("YOU WIN!");
-                }
             }
+            r = null;
+            System.gc();
         }
     }
