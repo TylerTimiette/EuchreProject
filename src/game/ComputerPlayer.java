@@ -114,7 +114,6 @@ public class ComputerPlayer  {
             //(The string is not null)
         } catch (Exception e) {
             e.printStackTrace();
-            bestViableCard();
         }
         return topCard;
     }

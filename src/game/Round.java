@@ -145,6 +145,8 @@ public class Round {
     public void promoteBowers(Card.Suit.Color color, Player player) {
         rd.setHighestValue(null);
         for(Card playerCard : player.hand) {
+            if(playerCard.getValue().equals(Card.Value.JACK))
+                playerCard.setNumericValue(11);
             if(playerCard.getSuit().getColor().equals(color) && playerCard.getValue().equals(Card.Value.JACK)) {
                 if(!playerCard.getSuit().equals(rd.getTrump())) {
                     playerCard.setNumericValue(90);
@@ -152,9 +154,11 @@ public class Round {
                     playerCard.setNumericValue(100);
                 }
             }
+
             if(playerCard.getValue().equals(Card.Value.JACK) && !playerCard.getSuit().getColor().equals(color) && !playerCard.getSuit().equals(rd.getTrump())) {
                 playerCard.setNumericValue(11);
             }
+
         }
         for (ComputerPlayer cpu : cpuList) {
             for (Card cpuCard : cpu.hand) {

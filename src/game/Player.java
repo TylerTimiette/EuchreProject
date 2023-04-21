@@ -15,9 +15,6 @@ public class Player {
         this.hand = hand;
     }
 
-    public Player() {
-    }
-
     //main method for the player
     public void prompt(Round round) {
             RoundData data = round.getData();
@@ -113,17 +110,42 @@ public class Player {
             //Replace cards
             int i = Integer.parseInt(s);
             if (i <= 5 && i > 0) {
-                Hands.inPlay.remove(i);
+               // Hands.inPlay.remove(i);
                 hand.set(i-1, c);
                 //Invalid number was chosen
             } else {
                 System.out.println("Please choose a valid number.");
+                scan.close();
                 replaceCard(c);
             }
             //NaN
         } catch (NumberFormatException e) {
             System.out.println("Please choose a valid number.");
+            scan.close();
             replaceCard(c);
+        }
+    }
+
+    public void testReplaceCard(Card c, int testnum) {
+        Scanner scan = new Scanner(System.in);
+        String s = scan.next();
+
+        try {
+            //Replace cards
+            if (testnum <= 5 && testnum > 0) {
+                // Hands.inPlay.remove(i);
+                hand.set(testnum-1, c);
+                //Invalid number was chosen
+            } else {
+                System.out.println("Please choose a valid number.");
+                scan.close();
+                testReplaceCard(c, testnum);
+            }
+            //NaN
+        } catch (NumberFormatException e) {
+            System.out.println("Please choose a valid number.");
+            scan.close();
+            testReplaceCard(c, testnum);
         }
     }
 
@@ -189,4 +211,6 @@ public class Player {
     public boolean decision() {
         return called;
     }
+
+    public void setDecisionTest(boolean b) { called = b;}
 }
