@@ -18,6 +18,7 @@ public class ComputerPlayerTest {
         hand.add(new Card(Card.Suit.CLUBS, Card.Value.QUEEN));
         hand.add(new Card(Card.Suit.CLUBS, Card.Value.NINE));
         ComputerPlayer player = new ComputerPlayer(hand, "test", round);
+        player.bestViableCard();
         player.play();
         assertEquals(3, player.hand.size());
         assertEquals(1, round.getData().getCardMap().size());
@@ -30,11 +31,12 @@ public class ComputerPlayerTest {
         ArrayList<Card> hand = new ArrayList<>();
         round.getData().setHighestValue(new Card(Card.Suit.HEARTS, Card.Value.ACE));
         hand.add(new Card(Card.Suit.CLUBS, Card.Value.KING));
-        hand.add(new Card(Card.Suit.CLUBS, Card.Value.JACK));
+        hand.add(new Card(Card.Suit.HEARTS, Card.Value.JACK));
         hand.add(new Card(Card.Suit.CLUBS, Card.Value.QUEEN));
         hand.add(new Card(Card.Suit.CLUBS, Card.Value.NINE));
         round.getData().setTrump(Card.Suit.CLUBS);
         ComputerPlayer player = new ComputerPlayer(hand, "test", round);
+        player.bestViableCard();
         boolean shouldCall = player.call();
         if(shouldCall)
             assertTrue(shouldCall);

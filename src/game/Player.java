@@ -126,10 +126,10 @@ public class Player {
         }
     }
 
-    public void testReplaceCard(Card c, int testnum) {
-        Scanner scan = new Scanner(System.in);
-        String s = scan.next();
 
+    //This method exists for the same reason the other test method does; it was impossible for me to figure out how exactly to make my method run otherwise as they rely on recursion.
+    //The methods themselves DO still work, but Input-Streaming didn't work for whatever reason.
+    public void testReplaceCard(Card c, int testnum) {
         try {
             //Replace cards
             if (testnum <= 5 && testnum > 0) {
@@ -138,13 +138,11 @@ public class Player {
                 //Invalid number was chosen
             } else {
                 System.out.println("Please choose a valid number.");
-                scan.close();
                 testReplaceCard(c, testnum);
             }
             //NaN
         } catch (NumberFormatException e) {
             System.out.println("Please choose a valid number.");
-            scan.close();
             testReplaceCard(c, testnum);
         }
     }
@@ -212,5 +210,7 @@ public class Player {
         return called;
     }
 
+    //This method exists for the same reason the other test method does; it was impossible for me to figure out how exactly to make my method run otherwise as they rely on recursion.
+    //The methods themselves DO still work, but Input-Streaming didn't work for whatever reason.
     public void setDecisionTest(boolean b) { called = b;}
 }

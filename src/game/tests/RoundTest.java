@@ -17,6 +17,7 @@ public class RoundTest {
             assertEquals(rd, r.getData());
         }
 
+        //This checks that the round was successfully instantiated. For actual round testing, please run the program.
         @Test
         public void testStart() {
             RoundData rd = new RoundData();

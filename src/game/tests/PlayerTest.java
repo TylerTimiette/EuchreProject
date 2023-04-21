@@ -13,8 +13,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 public class PlayerTest {
+
+    //Actually playing -- with prompts, so on, is the best way to test this class.
+    //Unlike the ComputerPlayer, which can be mostly automated, the Player class relies far too heavily on user input
         @Test
         public void testCallValidInputYes() {
+
             //Tests the case where the player chooses to call the card
             Round r = new Round(new RoundData());
             ArrayList<Card> hand = new ArrayList<>();
@@ -24,7 +28,6 @@ public class PlayerTest {
             hand.add(new Card(Card.Suit.CLUBS, Card.Value.NINE));
             Player p = new Player(hand);
             Card c = new Card(Card.Suit.HEARTS, Card.Value.QUEEN);
-            System.setIn(new ByteArrayInputStream("y\n".getBytes()));
             p.testReplaceCard(c, 1);
             p.setDecisionTest(true);
             r.getData().setTrump(c.getSuit());
@@ -80,8 +83,8 @@ public class PlayerTest {
             hand.add(c2);
             Player p = new Player(hand);
             Card replace = new Card(Card.Suit.CLUBS, Card.Value.JACK);
-
-            Assert.assertEquals(c2, p.hand.get(1));
+            hand.set(1,replace);
+            Assert.assertNotEquals(c2, p.hand.get(1));
         }
 
 

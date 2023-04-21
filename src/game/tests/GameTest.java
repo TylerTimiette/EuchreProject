@@ -19,4 +19,6 @@ public class GameTest {
     }
 
 
+    //There isn't really a way to test start-game. The best solution is to just ACTUALLY run the program
+
 }
