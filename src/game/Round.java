@@ -155,9 +155,6 @@ public class Round {
                 }
             }
 
-            if(playerCard.getValue().equals(Card.Value.JACK) && !playerCard.getSuit().getColor().equals(color) && !playerCard.getSuit().equals(rd.getTrump())) {
-                playerCard.setNumericValue(11);
-            }
 
         }
         for (ComputerPlayer cpu : cpuList) {

@@ -53,7 +53,7 @@ public class PlayerTest {
 
         @Test
         public void testCallInvalidInput() {
-            //Tests the case where the player passes and then doesn't
+            //Tests the case where the player passes and then doesn't. Again, best way is to just play the game.
             Round r = new Round(new RoundData());
             ArrayList<Card> hand = new ArrayList<>();
             hand.add(new Card(Card.Suit.CLUBS, Card.Value.KING));
